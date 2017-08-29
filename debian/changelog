@@ -1,3 +1,9 @@
+clickhouse (1.1.54282+20170829-1hnakamur1) xenial; urgency=medium
+
+  * Stop including clang binary files since we don't use compile feature.
+
+ -- Hiroaki Nakamura <hnakamur@gmail.com>  Tue, 29 Aug 2017 09:31:17 +0900
+
 clickhouse (1.1.54282+20170825-1hnakamur1) xenial; urgency=medium
 
   * Upstream source commit 7943a21fcf68633e3f4cd4d25606e37a0354ba8b
