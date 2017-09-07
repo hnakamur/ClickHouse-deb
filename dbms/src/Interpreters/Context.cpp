@@ -36,6 +36,7 @@
 #include <Interpreters/QueryLog.h>
 #include <Interpreters/PartLog.h>
 #include <Interpreters/Context.h>
+#include <Interpreters/DNSCache.h>
 #include <IO/ReadBufferFromFile.h>
 #include <IO/UncompressedCache.h>
 #include <Parsers/ASTCreateQuery.h>
@@ -261,7 +262,7 @@ Context::~Context()
 }
 
 
-InterserverIOHandler & Context::getInterserverIOHandler()                        { return shared->interserver_io_handler; }
+InterserverIOHandler & Context::getInterserverIOHandler()                       { return shared->interserver_io_handler; }
 
 std::unique_lock<Poco::Mutex> Context::getLock() const
 {
@@ -270,8 +271,8 @@ std::unique_lock<Poco::Mutex> Context::getLock() const
     return std::unique_lock<Poco::Mutex>(shared->mutex);
 }
 
-ProcessList & Context::getProcessList()                                            { return shared->process_list; }
-const ProcessList & Context::getProcessList() const                                { return shared->process_list; }
+ProcessList & Context::getProcessList()                                         { return shared->process_list; }
+const ProcessList & Context::getProcessList() const                             { return shared->process_list; }
 MergeList & Context::getMergeList()                                             { return shared->merge_list; }
 const MergeList & Context::getMergeList() const                                 { return shared->merge_list; }
 
@@ -1026,14 +1027,24 @@ const EmbeddedDictionaries & Context::getEmbeddedDictionaries() const
     return getEmbeddedDictionariesImpl(false);
 }
 
+EmbeddedDictionaries & Context::getEmbeddedDictionaries()
+{
+    return getEmbeddedDictionariesImpl(false);
+}
+
 
 const ExternalDictionaries & Context::getExternalDictionaries() const
 {
     return getExternalDictionariesImpl(false);
 }
 
+ExternalDictionaries & Context::getExternalDictionaries()
+{
+    return getExternalDictionariesImpl(false);
+}
 
-const EmbeddedDictionaries & Context::getEmbeddedDictionariesImpl(const bool throw_on_error) const
+
+EmbeddedDictionaries & Context::getEmbeddedDictionariesImpl(const bool throw_on_error) const
 {
     std::lock_guard<std::mutex> lock(shared->embedded_dictionaries_mutex);
 
@@ -1044,7 +1055,7 @@ const EmbeddedDictionaries & Context::getEmbeddedDictionariesImpl(const bool thr
 }
 
 
-const ExternalDictionaries & Context::getExternalDictionariesImpl(const bool throw_on_error) const
+ExternalDictionaries & Context::getExternalDictionariesImpl(const bool throw_on_error) const
 {
     std::lock_guard<std::mutex> lock(shared->external_dictionaries_mutex);
 
@@ -1089,7 +1100,7 @@ void Context::setProcessListElement(ProcessList::Element * elem)
     process_list_elem = elem;
 }
 
-ProcessList::Element * Context::getProcessListElement()
+ProcessList::Element * Context::getProcessListElement() const
 {
     return process_list_elem;
 }
@@ -1112,20 +1123,50 @@ UncompressedCachePtr Context::getUncompressedCache() const
     return shared->uncompressed_cache;
 }
 
+
+void Context::dropUncompressedCache() const
+{
+    auto lock = getLock();
+    if (shared->uncompressed_cache)
+        shared->uncompressed_cache->reset();
+}
+
+
 void Context::setMarkCache(size_t cache_size_in_bytes)
 {
     auto lock = getLock();
 
     if (shared->mark_cache)
-        throw Exception("Uncompressed cache has been already created.", ErrorCodes::LOGICAL_ERROR);
+        throw Exception("Mark cache has been already created.", ErrorCodes::LOGICAL_ERROR);
 
     shared->mark_cache = std::make_shared<MarkCache>(cache_size_in_bytes, std::chrono::seconds(settings.mark_cache_min_lifetime));
 }
+
 
 MarkCachePtr Context::getMarkCache() const
 {
     auto lock = getLock();
     return shared->mark_cache;
+}
+
+
+void Context::dropMarkCache() const
+{
+    auto lock = getLock();
+    if (shared->mark_cache)
+        shared->mark_cache->reset();
+}
+
+
+void Context::dropCaches() const
+{
+    auto lock = getLock();
+
+    if (shared->uncompressed_cache)
+        shared->uncompressed_cache->reset();
+
+    if (shared->mark_cache)
+        shared->mark_cache->reset();
 }
 
 BackgroundProcessingPool & Context::getBackgroundPool()
@@ -1144,7 +1185,7 @@ void Context::setReshardingWorker(std::shared_ptr<ReshardingWorker> resharding_w
     shared->resharding_worker = resharding_worker;
 }
 
-ReshardingWorker & Context::getReshardingWorker()
+ReshardingWorker & Context::getReshardingWorker() const
 {
     auto lock = getLock();
     if (!shared->resharding_worker)
@@ -1161,23 +1202,12 @@ void Context::setDDLWorker(std::shared_ptr<DDLWorker> ddl_worker)
     shared->ddl_worker = ddl_worker;
 }
 
-DDLWorker & Context::getDDLWorker()
+DDLWorker & Context::getDDLWorker() const
 {
     auto lock = getLock();
     if (!shared->ddl_worker)
-        throw Exception("DDL background thread not initialized.", ErrorCodes::LOGICAL_ERROR);
+        throw Exception("DDL background thread is not initialized.", ErrorCodes::LOGICAL_ERROR);
     return *shared->ddl_worker;
-}
-
-void Context::resetCaches() const
-{
-    auto lock = getLock();
-
-    if (shared->uncompressed_cache)
-        shared->uncompressed_cache->reset();
-
-    if (shared->mark_cache)
-        shared->mark_cache->reset();
 }
 
 void Context::setZooKeeper(zkutil::ZooKeeperPtr zookeeper)
