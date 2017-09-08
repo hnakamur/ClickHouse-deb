@@ -1,3 +1,10 @@
+clickhouse (1.1.54288+20170909-1hnakamur1) xenial; urgency=medium
+
+  * Update upstream source to v1.1.54288-testing
+    (commit: 5993e62f5bb5535817f49b2fdb7935a93622b57b)
+
+ -- Hiroaki Nakamura <hnakamur@gmail.com>  Sat, 09 Sep 2017 08:43:27 +0900
+
 clickhouse (1.1.54287+20170908-1hnakmaur1) xenial; urgency=medium
 
   * Update upstream source to 657e333dba99106dae8790dfa42abd9e81b01c0a
