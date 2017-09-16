@@ -1,3 +1,9 @@
+clickhouse (1.1.54289+20170914-1hnakamur1) xenial; urgency=medium
+
+  * Build deb package
+
+ -- Hiroaki Nakamura <hnakamur@gmail.com>  Sat, 16 Sep 2017 16:37:40 +0900
+
 clickhouse (1.1.54289) unstable; urgency=low
 
   * Modified source code
