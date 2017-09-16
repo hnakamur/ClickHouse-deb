@@ -52,7 +52,7 @@ namespace ErrorCodes
 }
 
 
-class TinyLogBlockInputStream final : public IProfilingBlockInputStream
+class TinyLogBlockInputStream : public IProfilingBlockInputStream
 {
 public:
     TinyLogBlockInputStream(size_t block_size_, const Names & column_names_, StorageTinyLog & storage_, size_t max_read_buffer_size_)
@@ -93,7 +93,7 @@ private:
 };
 
 
-class TinyLogBlockOutputStream final : public IBlockOutputStream
+class TinyLogBlockOutputStream : public IBlockOutputStream
 {
 public:
     explicit TinyLogBlockOutputStream(StorageTinyLog & storage_)

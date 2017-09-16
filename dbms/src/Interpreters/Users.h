@@ -67,6 +67,9 @@ struct User
     DatabaseSet databases;
 
     User(const String & name_, const String & config_elem, Poco::Util::AbstractConfiguration & config);
+
+    /// For insertion to containers.
+    User() {}
 };
 
 

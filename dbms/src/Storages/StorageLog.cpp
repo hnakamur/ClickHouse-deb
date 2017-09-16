@@ -49,7 +49,7 @@ namespace ErrorCodes
 }
 
 
-class LogBlockInputStream final : public IProfilingBlockInputStream
+class LogBlockInputStream : public IProfilingBlockInputStream
 {
 public:
     LogBlockInputStream(
@@ -130,7 +130,7 @@ private:
 };
 
 
-class LogBlockOutputStream final : public IBlockOutputStream
+class LogBlockOutputStream : public IBlockOutputStream
 {
 public:
     explicit LogBlockOutputStream(StorageLog & storage_)
