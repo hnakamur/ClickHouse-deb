@@ -47,7 +47,6 @@ private:
     Poco::Net::HTTPServerResponse & response;
 
     bool add_cors_header = false;
-    unsigned keep_alive_timeout = 0;
     bool compress = false;
     ZlibCompressionMethod compression_method;
     int compression_level = Z_DEFAULT_COMPRESSION;
@@ -87,7 +86,6 @@ public:
     WriteBufferFromHTTPServerResponse(
         Poco::Net::HTTPServerRequest & request_,
         Poco::Net::HTTPServerResponse & response_,
-        unsigned keep_alive_timeout_,
         bool compress_ = false,        /// If true - set Content-Encoding header and compress the result.
         ZlibCompressionMethod compression_method_ = ZlibCompressionMethod::Gzip,
         size_t size = DBMS_DEFAULT_BUFFER_SIZE);

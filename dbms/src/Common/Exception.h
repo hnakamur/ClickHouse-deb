@@ -59,7 +59,7 @@ private:
 using Exceptions = std::vector<std::exception_ptr>;
 
 
-[[noreturn]] void throwFromErrno(const std::string & s, int code = 0, int the_errno = errno);
+void throwFromErrno(const std::string & s, int code = 0, int the_errno = errno);
 
 
 /** Try to write an exception to the log (and forget about it).

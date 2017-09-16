@@ -16,12 +16,9 @@ void RootRequestHandler::handleRequest(
 {
     try
     {
-        const auto & config = server.config();
-        setResponseDefaultHeaders(response, config.getUInt("keep_alive_timeout", 10));
-
+        setResponseDefaultHeaders(response);
         response.setContentType("text/html; charset=UTF-8");
-
-        const std::string data = config.getString("http_server_default_response", "Ok.\n");
+        const std::string data = server.config().getString("http_server_default_response", "Ok.\n");
         response.sendBuffer(data.data(), data.size());
     }
     catch (...)

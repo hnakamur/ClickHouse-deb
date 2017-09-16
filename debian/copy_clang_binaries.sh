@@ -7,13 +7,14 @@ DST=${1:-.};
 PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:$PATH"
 LD=$(command -v gold || command -v ld.gold || command -v ld)
 
-# You can build a ClickHouse package without clang.
-# clang is used for compile but compile is disabled at default.
-# https://clickhouse.yandex/docs/en/operations/settings/settings.html#compile
-# https://github.com/yandex/ClickHouse/pull/1157#issuecomment-325423466
+# Should be runned with correct path to clang
+if [ -z "$CLANG" ]; then
+    CLANG=$(which clang)
+fi
+
 if [ ! -x "$CLANG" ]; then
-    echo "Skip copying clang files because clang executable not found."
-    exit 0
+    echo "Not found executable clang."
+    exit 1
 fi
 
 if [ ! -x "$LD" ]; then
