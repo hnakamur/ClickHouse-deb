@@ -1,11 +1,5 @@
-clickhouse (1.1.54289+20170914-1hnakamur1) xenial; urgency=medium
-
-  * Build deb package
-
- -- Hiroaki Nakamura <hnakamur@gmail.com>  Sat, 16 Sep 2017 16:37:40 +0900
-
-clickhouse (1.1.54289) unstable; urgency=low
+clickhouse (1.1.54292) unstable; urgency=low
 
   * Modified source code
 
- --  <robot-metrika-test@yandex-team.ru>  Wed, 13 Sep 2017 22:38:18 +0300
+ --  <robot-metrika-test@yandex-team.ru>  Wed, 20 Sep 2017 21:05:46 +0300
