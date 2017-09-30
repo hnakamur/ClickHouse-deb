@@ -1,3 +1,9 @@
+clickhouse (1.1.54292-1hnakamur1) xenial; urgency=medium
+
+  * Upstream release
+
+ -- Hiroaki Nakamura <hnakamur@gmail.com>  Sun, 01 Oct 2017 00:50:28 +0900
+
 clickhouse (1.1.54292) unstable; urgency=low
 
   * Modified source code
